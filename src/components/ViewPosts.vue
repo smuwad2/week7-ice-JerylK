@@ -36,10 +36,27 @@ export default {
     },
     methods: {
         editPost(id) {
-            
+            this.showEditPost = true;
+            this.editPostId = id;
+            this.entry = this.posts[id]['entry'];
+            this.mood = this.posts[id]['mood'];
         },
         updatePost(event) {
-            
+            const requestBody = {
+                entry: this.entry,
+                mood: this.mood
+            };
+
+            const queryParams = {
+                id: this.editPostId
+            }
+            axios.post(`${this.baseUrl}/updatePost`, requestBody, {
+                params: queryParams
+            })
+            .then(response => { 
+                console.log(response.data) 
+            })
+            .catch(error => { console.log(error.message) })
         }
     }
 }
@@ -61,7 +78,7 @@ export default {
                     <td>{{ post.id }}</td>
                     <td>{{ post.entry }}</td>
                     <td>{{ post.mood }}</td>
-                    <td><button>Edit</button></td>
+                    <td><button @click="editPost(posts.length - post.id)">Edit</button></td>
                 </tr>
             </tbody>
 
@@ -82,7 +99,7 @@ export default {
                             <option v-for="mood in moods" :value="mood">{{ mood }}</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Update Post</button>
+                    <button type="submit" class="btn btn-primary" v-on:click="updatePost">Update Post</button>
                 </form>
             </div>
         </div>
